@@ -1,5 +1,5 @@
 
-export class Aluno{
+ class Aluno{
 
     constructor (nome,idade,sexo){
         this.id = null,
@@ -8,7 +8,7 @@ export class Aluno{
         this.idade = null
         this.sexo = null,
         this.serie = null,
-        this.nome(nome);
+        this.nome = nome;
         this.setIdade(idade);
         this.setSexo(sexo);
     }
@@ -62,4 +62,6 @@ export class Aluno{
 
     
 }
+
+export default Aluno;
 

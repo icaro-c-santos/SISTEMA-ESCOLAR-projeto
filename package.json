@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "type": "module",
+  "name": "sistema-escolar-projeto",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./SITE-ESCOLA/back-end/servidor/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icaro-c-santos/SISTEMA-ESCOLAR-projeto.git"
+  },
+  "author": "\"Icaro Santos\"",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/icaro-c-santos/SISTEMA-ESCOLAR-projeto/issues"
+  },
+  "homepage": "https://github.com/icaro-c-santos/SISTEMA-ESCOLAR-projeto#readme",
+  "description": ""
+}
