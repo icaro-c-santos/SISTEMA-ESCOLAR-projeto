@@ -3,6 +3,8 @@ import { todosalunos,alterarAluno,excluirAluno,buscarAlunoMatricula,buscarAlunoN
 
 const rota = express.Router();
 
+
+
 rota.get("/aluno",(req,res)=>{
 
     try{
@@ -36,5 +38,33 @@ rota.get("/aluno/nome/:nome",(req,res)=>{
     }
 
 });
+
+rota.delete("/aluno",(req,res)=>{
+
+    try{    
+        const matricula = req.body.matricula;
+        excluirAluno(matricula);
+        res.status(200).send("ALUNO EXCLUIDO COM SUCESSO!");
+    }catch(e){
+        res.status(400).send("\n ACONTECEU UM ERRO!: " + e);
+    }
+
+});
+
+rota.patch("/aluno",(req,res)=>{
+
+    try{
+        const matricula = req.body.matricula;
+        const propiedade = req.body.propiedade;
+        const valor = req.body.valor;
+        
+        alterarAluno(matricula,propiedade,valor);
+        res.status(200).send("ALUNO ALTERADO COM SUCESSO!");
+    }catch(e){
+        res.status(400).send("\n ACONTECEU UM ERRO!: " + e);
+    }
+});
+
+
 
 export default rota;

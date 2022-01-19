@@ -4,6 +4,8 @@ import rota from "./rotas/rota-aluno.js";
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 app.use(rota);
 

@@ -1,6 +1,5 @@
-import  ListaAlunos from "../banco_de_dados.js";
-import deletar from "../banco_de_dados.js";
-import alterar from "../banco_de_dados.js";
+import  ListaAlunos, { alterar, deletar } from "../banco_de_dados.js";
+
 
 
 
@@ -17,12 +16,13 @@ function buscarAlunoMatricula(matricula){
 }
 
 function excluirAluno(matricula){
-    deletar(matricula);
+   deletar(matricula);
 }
 
-function alterarAluno(matricula){
-    alterar(matricula);
+function alterarAluno(matricula,propiedade,valor){
+    alterar(matricula,propiedade,valor);
 }
 
 
 export { todosalunos,alterarAluno,excluirAluno,buscarAlunoMatricula,buscarAlunoNome};
+

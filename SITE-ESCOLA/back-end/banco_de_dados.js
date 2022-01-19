@@ -15,14 +15,33 @@ export const ListaAlunos = [];
 ListaAlunos.push(al1,al2,al3);
 
 export function deletar(matricula){
+   
+  for(let i = 0; i<ListaAlunos.length;i++){
+    
+      if(ListaAlunos[i].matricula == matricula){
+        console.log("ENTROU!");
+         ListaAlunos.splice(i,i+1);
+         break;
+      }
+  }
 
 }
 
-export function alterar(matricula,aluno){
+export function alterar(matricula,propiedade,valor){
 
-
+  for(let i = 0; i<ListaAlunos.length;i++){
+    if(ListaAlunos[i].matricula == matricula){
+      
+      if(!ListaAlunos[i].hasOwnProperty(propiedade)){
+          throw new Error("A PROPIEDADE A SER ALTERADA NÃO EXISTE!");
+      }else{
+        ListaAlunos[i][propiedade] = valor;
+        console.log(ListaAlunos[i]);
+        break;
+      }
+       
+    }
+}
 }
 
 export default ListaAlunos;
-
-
