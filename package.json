@@ -10,7 +10,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./SITE-ESCOLA/back-end/servidor/server.js"
+    "start": "nodemon ./SITE-ESCOLA/back-end/servidor/server.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
     "url": "https://github.com/icaro-c-santos/SISTEMA-ESCOLAR-projeto/issues"
   },
   "homepage": "https://github.com/icaro-c-santos/SISTEMA-ESCOLAR-projeto#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }

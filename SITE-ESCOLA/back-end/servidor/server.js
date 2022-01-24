@@ -1,15 +1,14 @@
 import  express from "express";
-import rota from "./rotas/rota-aluno.js";
-
+import rotaProfessor from "./rotas/rota-professor.js";
 
 const app = express();
+export const baseUrl = "http://localhost:3000";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use(rota);
+app.use(rotaProfessor);
 
 app.listen(3000,() =>{
-
     console.log("SERVIDOR ATIVO!");
 });
