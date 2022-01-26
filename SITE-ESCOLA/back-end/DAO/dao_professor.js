@@ -20,6 +20,7 @@ import ssequelize from "../database/database_escola.js"
     return promisse;
 }
 
+  
 
 
  const  obterProfessores = new Promise((resolve,reject)=>{

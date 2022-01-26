@@ -3,13 +3,10 @@ import { alterarProfessor, criarProfessor, obterProfessorCodigo, obterProfessore
 import { baseUrl } from "../server.js";
 
 import { body, validationResult } from "express-validator";
+import { validacaoCamposProfessor, validate } from "../validacaoCampos.js";
+
 
 const rotaProfessor = express.Router();
-
-const validacaoPutProfessores = [
-  body("nome").isString().notEmpty().withMessage("CAMPO NOME INVALIDO!"),  
-  body("sexo").isString().notEmpty().withMessage("CAMPO SEXO INVALIDO!"),
-  body("idade").isInt({min: 1 , max: 160}).withMessage("INTERVALO INVALIDO!").notEmpty().withMessage("CAMPO IDADE INVALIDO!")];
 
 
 rotaProfessor.get("/professores", (req, res, next) => {
@@ -23,30 +20,26 @@ rotaProfessor.get("/professores", (req, res, next) => {
 });
 
 
-rotaProfessor.put("/professores", validacaoPutProfessores, (req, res, next) => {
 
-  try{
+rotaProfessor.post("/professores",validate,validacaoCamposProfessor,(req, res, next) => {
 
-    const erros = validationResult(req);
+  try { 
 
-    if (erros.isEmpty()) {
-      res.status(201).send("OK");
-    } else {
-      res.status(400).send({ erros: erros.array() });
-    }
+      criarProfessor(req.body.nome, req.body.idade, req.body.sexo).then(professorCriado => {
+      
+        if (!professorCriado.dataValues) {
+            res.status(500).send({codigo: "05", mensagem: "ERRO NO SERVIDOR!", detalhe:"PROFESSOR NÃO CRIADO!"});
+        } else {
+            res.status(201).location("").send(professorCriado.dataValues);
+        }
 
-  }catch(erro){
-      res.status(500).send("ACONTECEU UM ERRO! : " +erro.message);
+      })
+
+  }catch (erro) {
+    res.status(500).send({codigo: "05", mensagem: "ERRO NO SERVIDOR!", detalhe: erro.message});
   }
 
 });
 
-rotaProfessor.put("")
 
-
-
-
-
-
-
-export default rotaProfessor;
+export default rotaProfessor
