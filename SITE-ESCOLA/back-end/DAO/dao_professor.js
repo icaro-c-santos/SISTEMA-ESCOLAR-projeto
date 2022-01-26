@@ -55,7 +55,10 @@ function obterProfessorCodigo(codigo){
   const promisse = new Promise((resolve,reject)=>{
 
       try{
-        const professor = Professor.findAll({raw: true},{where: {codigo:codigo}});
+        const professor = Professor.findAll({
+          raw:true,
+          where: {codigo:codigo}
+        });
         resolve(professor);
       }catch(error){
         reject(error);
@@ -64,45 +67,44 @@ function obterProfessorCodigo(codigo){
   return promisse;
 }
 
-
-
 function alterarProfessor(codigo,nome,sexo,idade){
   
-  
-  const b = obterProfessorCodigo(codigo).then(p=>{
+  const promisse = obterProfessorCodigo(codigo).then(p=>{
     
-    if(p.length>0){
-      return p;
-    }else{
+    if(!p.length>0){
+
       throw new Error("O CODIGO DIGITADO NÃO EXISTE NO BANCO DE DADOS!");
+   
+    }else{
+
+     Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
+     return "ALTERADO COM SUCESSO!";
+
     }
-  }).then(p=>{
-    Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
-    return "ALTERADO COM SUCESSO!";
-  }).catch(erro => {
-    throw erro;
+
   })
-  return b;
+  return promisse;
 }
 
 
 function excluirProfessor(codigo){
   
   
-  const b = obterProfessorCodigo(codigo).then(p=>{
-    
-    if(p.length>0){
-      return p;
-    }else{
-      throw new Error("O CODIGO DIGITADO NÃO EXISTE NO BANCO DE DADOS!");
-    }
-  }).then(p=>{
-    Professor.destry({where:{codigo:codigo}});
-    return "PROFESSOR EXCLUIDO COM SUCESSO!";
-  }).catch(erro => {
-    throw erro;
-  })
-  return b;
+  const promisse = new Promise((resolve,reject)=>{
+  
+    obterProfessorCodigo(codigo).then(p=>{
+
+        if(!p.length>0){
+            reject({codigo: "06", mensage: "O CODIGO DIGITADO NÃO EXISTE NO BANCO DE DADOS!"});   
+        }else{
+            Professor.destroy({where:{codigo:codigo}});
+            resolve("PROFESSOR EXCLUIDO COM SUCESSO!"); /// estou usando http 204 en~tao não retorna essa msg deixei aqui apenas para caso precise alterar.
+        }
+  }).catch(p => reject(p));
+ 
+});
+
+return promisse;
 }
 
 

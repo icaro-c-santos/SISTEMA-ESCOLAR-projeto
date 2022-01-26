@@ -9,6 +9,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(rotaProfessor);
 
-app.listen(8084,() =>{
+app.listen(3000,() =>{
     console.log("SERVIDOR ATIVO!");
 });
