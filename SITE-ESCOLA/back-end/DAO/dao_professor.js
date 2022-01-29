@@ -1,5 +1,5 @@
 import Professor from "../classes/professor.js";
-import ssequelize from "../database/database_escola.js"
+
 
 
  function  criarProfessor(nome,idade,sexo){
