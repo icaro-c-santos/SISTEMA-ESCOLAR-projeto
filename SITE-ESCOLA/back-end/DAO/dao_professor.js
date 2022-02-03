@@ -1,7 +1,6 @@
 import Professor from "../classes/professor.js";
 
 
-
  function  criarProfessor(nome,idade,sexo){
       
    const promisse = new Promise((resolve,reject)=>{ 
@@ -12,15 +11,13 @@ import Professor from "../classes/professor.js";
             idade: idade,
             sexo: sexo
         });
-        resolve(novoprofessor);
+          resolve(novoprofessor);
         }catch(error){
           reject(error);           
         }
     })
     return promisse;
 }
-
-  
 
 
  const  obterProfessores = new Promise((resolve,reject)=>{
@@ -40,7 +37,7 @@ function obterProfessorNome(nome){
   const promisse = new Promise((resolve,reject)=>{
 
       try{
-        const professores = Professor.findAll({raw: true},{ where:{ nome: nome }});
+        const professores = Professor.findAll({raw: true, where:{ nome: nome }});
         resolve(professores);
       }catch(error){
         reject(error);

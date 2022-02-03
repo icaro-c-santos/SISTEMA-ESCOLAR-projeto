@@ -1,6 +1,6 @@
 import  express from "express";
 import  jwt  from "jsonwebtoken";
-import {criarToken, obterToken}  from "./SITE-ESCOLA/back-end/servidor/autenticacao/dao_token.js";
+import { autorizarToken, gerarToken, validarToken, validarTokenRefresh } from "./SITE-ESCOLA/back-end/servidor/autenticacao/middllewar_token.js";
 
 
 const app = express();
@@ -11,22 +11,17 @@ app.use(express.urlencoded({ extended: false }));
 const senha = "icar123";
 const senha2 = "icar";
 
-app.get("/aluno",(req,res,next)=>{
+
+app.get("/token",validarTokenRefresh,(req,res,next)=>{
+     
+    gerarToken(res.locals.userId,false).then(p => res.send(p));
+    
 
 });
-
-
-const token =jwt.sign({userId: 5},senha,{expiresIn: 300});
-
-
-
-
-
-
-
-app.listen(3009,() =>{
+app.listen(3001,() =>{
     console.log("SERVIDOR ATIVO!");
 });
+
 
 
 

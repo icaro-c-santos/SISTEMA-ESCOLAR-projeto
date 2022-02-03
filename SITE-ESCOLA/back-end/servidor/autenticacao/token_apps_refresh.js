@@ -2,8 +2,7 @@ import Sequelize from "sequelize";
 import ssequelize from "../../database/database_escola.js";
 
 
-
-const TokenApp = ssequelize.define("tokens",{
+const TokenAppRefresh = ssequelize.define("tokensRefresh",{
     codigo:{
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -14,8 +13,6 @@ const TokenApp = ssequelize.define("tokens",{
         type: Sequelize.STRING,
         allowNull: false
     },
-    
 });
 
-
-export default TokenApp 
+export default TokenAppRefresh

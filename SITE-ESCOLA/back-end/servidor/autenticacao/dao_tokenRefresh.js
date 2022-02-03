@@ -1,12 +1,11 @@
-import TokenApp from "./token_app.js";
+import TokenAppRefresh from "./token_apps_refresh.js"
 
 
-
-function  criarToken(token,token_atualizacao){
+function  criarTokenRefresh(token){
       
     const promisse = new Promise((resolve,reject)=>{ 
          try{
-           const novoToken =  TokenApp.create({ 
+           const novoToken =  TokenAppRefresh.create({ 
              token: token
          });
              resolve(novoToken);
@@ -17,12 +16,12 @@ function  criarToken(token,token_atualizacao){
      return promisse;
  }
 
- function obterToken(tokenUsuario){
+ function obterTokenRefresh(tokenUsuario){
 
     const promisse = new Promise((resolve,reject)=>{
   
         try{
-          const token = TokenApp.findAll({
+          const token = TokenAppRefresh.findAll({
             raw:true,
             where: {token:tokenUsuario}
           });
@@ -34,6 +33,6 @@ function  criarToken(token,token_atualizacao){
     return promisse;
   }
 
- export {criarToken,obterToken}
+ export {criarTokenRefresh,obterTokenRefresh}
  
    

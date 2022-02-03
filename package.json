@@ -13,7 +13,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./SITE-ESCOLA/back-end/servidor/server.js"
+    "start": "nodemon SITE-ESCOLA/back-end/servidor/server.js"
   },
   "repository": {
     "type": "git",
