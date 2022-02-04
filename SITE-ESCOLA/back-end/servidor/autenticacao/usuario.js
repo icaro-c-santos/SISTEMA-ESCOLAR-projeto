@@ -2,7 +2,6 @@ import Sequelize from "sequelize";
 import ssequelize from "../../database/database_escola.js";
 
 
-
 const Usuario = ssequelize.define("usuario",{
 
     id:{
@@ -19,6 +18,9 @@ const Usuario = ssequelize.define("usuario",{
     senha:{
         type: Sequelize.STRING(45),
         allowNull: false,
+    },
+    administrador:{
+        type: Sequelize.BOOLEAN
     }
 
 

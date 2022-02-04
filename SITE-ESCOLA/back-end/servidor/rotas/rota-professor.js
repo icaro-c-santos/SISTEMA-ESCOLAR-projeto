@@ -2,7 +2,7 @@ import express from "express";
 import { alterarProfessor, criarProfessor, excluirProfessor, obterProfessorCodigo, obterProfessores, obterProfessorNome } from "../../DAO/dao_professor.js";
 import { autorizarToken, validarToken } from "../autenticacao/middllewar_token.js";
 import { baseUrl } from "../server.js";
-import { validacaoCamposProfessor, validateDeleteProfessor, validatePostProfessor } from "../validacaoCampos.js";
+import { validacaoCamposProfessor, validateDeleteProfessor, validatePostProfessor } from "../validacao/validacaoCampos.js";
 
 const rotaProfessor = express.Router();
 
@@ -36,7 +36,7 @@ rotaProfessor.post("/professores", validarToken,autorizarToken, validatePostProf
 
   criarProfessor(req.body.nome, req.body.idade, req.body.sexo).then(professorCriado => {
 
-    if (!professorCriado.dataValues) {
+    if (!professorCriado) {
       res.status(500).send({ codigo: "05", mensagem: "ERRO NO SERVIDOR!", detalhe: "PROFESSOR NÃO CRIADO!" });
     } else {
       res.status(201).location(baseUrl + "/professores/" + professorCriado.codigo).send(professorCriado);

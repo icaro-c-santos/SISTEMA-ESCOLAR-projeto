@@ -1,4 +1,3 @@
-import ssequelize from "../../database/database_escola.js";
 import Usuario from "./usuario.js";
 
 
@@ -28,7 +27,8 @@ function criarUsuario(login,senha){
                 if(usuarios.length<=0){
                  const  novoUsuario = Usuario.create({
                         login: login,
-                        senha: senha
+                        senha: senha,
+                        administrador: false
                     });
                     resolve(novoUsuario);
                 }else{
