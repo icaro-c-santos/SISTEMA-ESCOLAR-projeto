@@ -30,7 +30,8 @@ rotaAutenticacao.post("/sing",validateLogin,validacaoCamposLogin,(req,res,next)=
 })
 
 rotaAutenticacao.post("/login",validateLogin,validacaoCamposLogin,(req,res,next)=>{
-    
+
+  
         const login = req.body.login;
         const senha = req.body.senha;
     
@@ -52,5 +53,8 @@ rotaAutenticacao.post("/login",validateLogin,validacaoCamposLogin,(req,res,next)
 
 });
 
+rotaAutenticacao.use((error,req,res,next)=>{
+        res.send("errorrrr"+error.message);
+})
 
 export default rotaAutenticacao

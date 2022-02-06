@@ -7,7 +7,7 @@ function obterSenha(){
 }
 
 
-function gerarToken(idUsuario,admnistrador){
+function  gerarToken(idUsuario,admnistrador){
     
     const promisse = new Promise((resolve,reject)=>{
    

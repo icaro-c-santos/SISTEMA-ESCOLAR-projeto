@@ -6,7 +6,8 @@ import { validacaoCamposProfessor, validateDeleteProfessor, validatePostProfesso
 
 const rotaProfessor = express.Router();
 
-rotaProfessor.get("/professores", (req, res, next) => {
+
+rotaProfessor.get("/professores",validarToken, (req, res, next) => {
 
   obterProfessores.then(p => res.status(200).send(p)).
     catch(error => { res.status(400).send({ error: error.message }) })
