@@ -1,109 +1,67 @@
 import Professor from "../classes/professor.js";
+import erroApi from "../servidor/erroApi.js";
 
 
- function  criarProfessor(nome,idade,sexo){
-      
-   const promisse = new Promise((resolve,reject)=>{ 
-         
-        try{
-          const novoprofessor =  Professor.create({
-            nome: nome,
-            idade: idade,
-            sexo: sexo
-        });
-          resolve(novoprofessor);
-        }catch(error){
-          reject(error);           
-        }
-    })
-    return promisse;
-}
+  async function criarProfessor(nome,idade,sexo){
 
-
- const  obterProfessores = new Promise((resolve,reject)=>{
-
-  try{
-    const professores =  Professor.findAll({raw: true});
-    resolve(professores);
-  }catch(error){
-    reject(error);  
+      const novoprofessor = await Professor.create({
+          nome: nome,
+          idade: idade,
+          sexo: sexo
+      });
+      return novoprofessor;
   }
-})
 
 
-function obterProfessorNome(nome){
+  async function obterProfessores(){
+
+      const professores = await Professor.findAll();
+      return professores;
+  }
   
 
-  const promisse = new Promise((resolve,reject)=>{
-
-      try{
-        const professores = Professor.findAll({raw: true, where:{ nome: nome }});
-        resolve(professores);
-      }catch(error){
-        reject(error);
-      }
-  })
-  return promisse;
-
-}
-
-function obterProfessorCodigo(codigo){
-
-  const promisse = new Promise((resolve,reject)=>{
-
-      try{
-        const professor = Professor.findAll({
-          raw:true,
-          where: {codigo:codigo}
-        });
-        resolve(professor);
-      }catch(error){
-        reject(error);
-      }
-  })
-  return promisse;
-}
-
-function alterarProfessor(codigo,nome,sexo,idade){
-  
-  const promisse = obterProfessorCodigo(codigo).then(p=>{
+    async function obterProfessorNome(nome){
     
-    if(!p.length>0){
+    const professores = await Professor.findAll({ where:{ nome: nome }});  
+    return professores;
 
-      throw new Error("O CODIGO DIGITADO NÃO EXISTE NO BANCO DE DADOS!");
-   
-    }else{
-
-     Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
-     return "ALTERADO COM SUCESSO!";
-
-    }
-
-  })
-  return promisse;
-}
+  }
 
 
-function excluirProfessor(codigo){
+  async function obterProfessorCodigo(codigo){
+
+      const professor = await Professor.findAll({ where: {codigo:codigo}});
+      return professor;
+  }
+
+
+
+  async function alterarProfessor(codigo,nome,idade,sexo){
   
-  
-  const promisse = new Promise((resolve,reject)=>{
-  
-    obterProfessorCodigo(codigo).then(p=>{
-
-        if(!p.length>0){
-            reject({codigo: "06", mensage: "O CODIGO DIGITADO NÃO EXISTE NO BANCO DE DADOS!"});   
-        }else{
-            Professor.destroy({where:{codigo:codigo}});
-            resolve("PROFESSOR EXCLUIDO COM SUCESSO!"); /// estou usando http 204 en~tao não retorna essa msg deixei aqui apenas para caso precise alterar.
+      const professor = await obterProfessorCodigo(codigo);
+        if(!professor.length>0){
+          throw(erroApi(40404,null,"CODIGO NÃO EXISTE!",404));
+        }else{ 
+          return  await Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
         }
-  }).catch(p => reject(p));
+   }
+
+
+   async function excluirProfessor(codigo){
+    
  
-});
+      const professor = await obterProfessorCodigo(codigo);
 
-return promisse;
-}
+        if(!professor.length>0){
+          throw(erroApi(41404,"ERRO!","CODIGO NÃO EXISTE!",404)); 
+        }else{
+           await Professor.destroy({where:{codigo:codigo}});
+           return true;
+        }
+  
+        
 
+  }
 
 export {criarProfessor,obterProfessores,obterProfessorCodigo,obterProfessorNome,alterarProfessor,excluirProfessor}
 

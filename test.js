@@ -11,15 +11,23 @@ app.use(express.urlencoded({ extended: false }));
 const senha = "icar123";
 const senha2 = "icar";
 
+async function obter(x){
+    if(x>0){
+        throw new Error("É MAIOR QUE ZERO!");
+    }
+        return "É MENOR QUE ZERO!";
+    
+}
 
-app.get("/token",validarTokenRefresh,(req,res,next)=>{
-     
-    gerarToken(res.locals.userId,false).then(p => res.send(p));
+app.get("/token/:numero",(req,res,next)=>{
     
 
+      obter(req.params.numero).then(a => res.send(a)).catch(erro=> res.send(erro.message));
+
 });
-app.listen(3001,() =>{
-    console.log("SERVIDOR ATIVO!");
+
+app.listen(3002,() =>{
+    console.log("SERVIDOR ATIVO! 3002");
 });
 
 

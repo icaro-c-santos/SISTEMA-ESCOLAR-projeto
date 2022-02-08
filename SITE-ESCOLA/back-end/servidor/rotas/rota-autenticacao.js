@@ -1,60 +1,63 @@
 import express from "express";
+import erroApi from "../erroApi.js";
 import { buscarUsuario, criarUsuario } from "../autenticacao/dao_usuario.js";
 import { gerarToken, validarTokenRefresh } from "../autenticacao/middllewar_token.js";
 import { validacaoCamposLogin, validateLogin } from "../validacao/validacaoRotaAutenticacao.js";
 
-const rotaAutenticacao = express.Router();
+    const rotaAutenticacao = express.Router();
 
-rotaAutenticacao.post("/refreshtoken",validarTokenRefresh,(req,res,next)=>{
-    if(res.locals.token.refresh){
-        gerarToken(res.locals.token.userId,res.locals.token.adm)
-        .then(token => res.status(200).send(token))
-        .catch(error => res.status(500).send("ERRO NO SERVIDOR!"+error));
-    }else{
-        res.status(498).send("TOKEN INVALIDO: TOKEN ESPERADO É DO TIPO TOKEN REFRESH!");
-    }   
-});
+    rotaAutenticacao.post("/refreshtoken",validarTokenRefresh,(req,res,next)=>{
+    
+        if(res.locals.token.refresh){
+            
+            gerarToken(res.locals.token.userId,res.locals.token.adm)
+            .then(token => res.status(200).json(token))
+            .catch(error => next(error));
+            
+        }else{
+            const erro = erroApi(50000,"ERRO","ERRO NO SERVIDOR!",500);
+            next(erro);
+        }   
+    });
 
-rotaAutenticacao.post("/sing",validateLogin,validacaoCamposLogin,(req,res,next)=>{
+    rotaAutenticacao.post("/sing",validateLogin,validacaoCamposLogin,(req,res,next)=>{
 
-    try{
         const login = req.body.login;
         const senha = req.body.senha;
-        
-        criarUsuario(login,senha,true).then(user => {
-            res.send(user);
-        }).catch(error => res.send(error.message))
-    }catch(error){
-        res.send(error.message)
-    }
-})
+            
+        criarUsuario(login,senha)
+        .then(user => { res.status(201).json(user)})
+        .catch(erro => next(erro));
+    })
 
-rotaAutenticacao.post("/login",validateLogin,validacaoCamposLogin,(req,res,next)=>{
+    rotaAutenticacao.post("/login",validateLogin,validacaoCamposLogin,(req,res,next)=>{
 
   
         const login = req.body.login;
         const senha = req.body.senha;
     
-        buscarUsuario(login).then(user=>{
+
+        (async() =>{
+
+       
+            const user = await buscarUsuario(login);
             
             if(user.length>0 && user[0].login === login && user[0].senha === senha){
                
-                gerarToken(user[0].login,user[0].administrador)
-                .then(token => res.status(200).send(token))
-                .catch(error => res.status(500).send("ERRO NO SERVIDOR!"));
-
+               const token = await gerarToken(user[0].login,user[0].administrador)
+               res.status(200).json(token);
+            
             }else{
-                res.status(400).send("USUARIO OU SENHA INVALIDO!");
+               const erro = erroApi(46400,"ERROR","USUARIO OU SENHA INVALIDO!",400);
+               next(erro);
             }
-        }).catch(error => res.status(500).send("ERRO NO SERVIDOR!"));
-    
-    
+
+        })();
+
     
 
 });
 
-rotaAutenticacao.use((error,req,res,next)=>{
-        res.send("errorrrr"+error.message);
-})
+
 
 export default rotaAutenticacao
