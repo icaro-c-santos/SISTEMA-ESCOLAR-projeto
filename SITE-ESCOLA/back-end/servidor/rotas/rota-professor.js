@@ -1,52 +1,90 @@
 import express from "express";
 import { alterarProfessor, criarProfessor, excluirProfessor, obterProfessorCodigo, obterProfessores, obterProfessorNome } from "../../DAO/dao_professor.js";
 import { autorizarToken, validarToken } from "../autenticacao/middllewar_token.js";
+import erroApi from "../erroApi.js";
 import { baseUrl } from "../server.js";
-import { validacaoCamposProfessor, validateDeleteProfessor, validatePostProfessor } from "../validacao/validacaoCampos.js";
+import { validacaoCamposProfessor, validatePostProfessor, validateProfessorCodigo } from "../validacao/validacaoCampos.js";
 
 const rotaProfessor = express.Router();
 
-
-rotaProfessor.get("/professores",validarToken, (req, res, next) => {
-
-  obterProfessores.then(p => res.status(200).send(p)).
-    catch(error => { res.status(400).send({ error: error.message }) })
+rotaProfessor.get("/professores",validarToken, (req, res,next) => {
+  
+  obterProfessores()
+  .then(professores => res.status(200).json(professores))
+  .catch(error => next(error));
 
 });
 
+rotaProfessor.get("/professores/:nome",validarToken,(req, res,next) => {
 
-
-rotaProfessor.get("/professores/:codigo",validarToken, (req, res, next) => {
-
-  obterProfessorCodigo(req.params.codigo).then(p => res.status(200).send(p)).
-    catch(error => { res.status(400).send({ error: error.message }) })
+  obterProfessorNome(req.params.nome)
+  .then(professores => res.status(200).json(professores))
+  .catch(error => next(error));
+   
 });
 
+rotaProfessor.get("/professores/codigo/:codigo",validarToken, (req, res,next) => {
 
-rotaProfessor.delete("/professores/:codigo",validarToken,autorizarToken, validateDeleteProfessor, validacaoCamposProfessor, (req, res, next) => {
+  obterProfessorCodigo(req.params.codigo)
+  .then(professores => res.status(200).json(professores))
+  .catch(error => next(error));
+   
+});
 
-  excluirProfessor(req.params.codigo).then(mgs => {
-     res.status(204).send();
-  }).catch(error => res.status(400).send(error));
+rotaProfessor.delete("/professores/:codigo",validarToken,autorizarToken,(req, res,next) => {
+  
+  excluirProfessor(45).then(res.status(201)).catch(error => next(error))
 
 })
 
 
+rotaProfessor.post("/professores", validarToken,autorizarToken, validatePostProfessor, validacaoCamposProfessor, (req, res,next) => {
+  
+  (async() =>{
 
-rotaProfessor.post("/professores", validarToken,autorizarToken, validatePostProfessor, validacaoCamposProfessor, (req, res, next) => {
+    try {
 
-  criarProfessor(req.body.nome, req.body.idade, req.body.sexo).then(professorCriado => {
+         const professorCriado = await criarProfessor(req.body.nome, req.body.idade, req.body.sexo);
+         if(!professorCriado){
+               throw(erroApi(47400,"ERROR","ERRO NO SERVIDOR!",500,"PROFESSOR NÃO CRIADO!"));
+          
+         }else{
+               res.status(201).location(baseUrl + "/professores/codigo/" + professorCriado.codigo).json(professorCriado);
+         }
 
-    if (!professorCriado) {
-      res.status(500).send({ codigo: "05", mensagem: "ERRO NO SERVIDOR!", detalhe: "PROFESSOR NÃO CRIADO!" });
-    } else {
-      res.status(201).location(baseUrl + "/professores/" + professorCriado.codigo).send(professorCriado);
+    } catch(error){
+        next(error);
     }
+    
 
-  }).catch(erro => {
-    res.status(500).send({ codigo: "05", mensagem: "ERRO NO SERVIDOR!", detalhe: erro.message })
-  })
+  })();
+
 });
+
+rotaProfessor.put("/professores/:codigo", validarToken,autorizarToken,validatePostProfessor, validacaoCamposProfessor, (req, res,next) => {
+     
+  (async() =>{
+
+    try {
+
+         const professorAlterado = await alterarProfessor(req.params.codigo,req.body.nome, req.body.idade, req.body.sexo);
+         if(!professorAlterado){
+               throw(erroApi(47400,"ERROR","ERRO NO SERVIDOR!",500,"PROFESSOR NÃO CRIADO!"));
+          
+         }else{
+               res.status(204).location(baseUrl + "/professores/codigo/" + req.params.codigo).json();
+         }
+
+    } catch(error){
+        next(error);
+    }
+    
+
+  })();
+
+});
+
+
 
 
 export default rotaProfessor

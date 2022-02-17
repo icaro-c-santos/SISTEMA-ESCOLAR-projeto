@@ -1,69 +1,46 @@
+import erroApi from "../erroApi.js";
 import Usuario from "./usuario.js";
 
 
+    async function buscarUsuario(loginUsuario){
 
-function buscarUsuario(loginUsuario){
+        const usuario = await Usuario.findAll({ where:{ login: loginUsuario }});
+        return usuario;
+    }
 
-    const promisse = new Promise((resolve,reject)=>{
-        
-        try{
-             const usuario = Usuario.findAll({raw: true, where:{ login: loginUsuario }});
-             resolve (usuario);
-        }catch(error){
-            reject(error);
+
+
+    async function criarUsuario(login,senha){
+    
+        const usuario = await buscarUsuario(login);
+
+        if(usuario.length>0){
+            const erro = erroApi(45404,"ERROR","USUARIO JÁ EXISTENTE!",409);
+            throw (erro);
+        }else{
+
+            const  novoUsuario = await Usuario.create({
+                login: login,
+                senha: senha,
+                administrador: false
+            });
+            return novoUsuario;
         }
 
-    })
-
-    return promisse;
-}
+    }
 
 
-
-function criarUsuario(login,senha){
-
-    const promisse = new Promise((resolve,reject)=>{
-            buscarUsuario(login).then(usuarios =>{
-                if(usuarios.length<=0){
-                 const  novoUsuario = Usuario.create({
-                        login: login,
-                        senha: senha,
-                        administrador: false
-                    });
-                    resolve(novoUsuario);
-                }else{
-                   return reject(new Error("USUARIO JÁ EXISTE!"))
-                }
-            })
-            
-
-    })
-    return promisse;
-}
-
-
-function deletarUsuario(login){
+    async function deletarUsuario(login){
   
-    const promisse = new Promise((resolve,reject)=>{
+        const usuario = await buscarUsuario(login);
 
-        buscarUsuario(login).then(usuarios =>{
-
-            if(usuarios.length<=0){
-               reject(new Error("USUARIO! NÃO EXISTENTE!"))
+            if(usuario.length>0){
+                await  Usuario.destry({ where:{ login:login }});
+                 return true
             }else{
-               Usuario.destry({
-                   where:{
-                       login:login
-                   }
-               });
-               resolve("USUARIO EXCLUIDO COM SUCESSO!");
+                throw(erroApi(46404,"ERROR","USUARIO JÁ EXISTENTE!",404));
             }
-        })
-        
-
-    })
-    return promisse;
-}
+    }
 
 
 

@@ -1,36 +1,16 @@
 import TokenAppRefresh from "./token_apps_refresh.js"
 
 
-function  criarTokenRefresh(token){
+async function  criarTokenRefresh(token){
       
-    const promisse = new Promise((resolve,reject)=>{ 
-         try{
-           const novoToken =  TokenAppRefresh.create({ 
-             token: token
-         });
-             resolve(novoToken);
-         }catch(error){
-           reject(error);           
-         }
-     })
-     return promisse;
+     const novoToken =  await TokenAppRefresh.create({   refreshToken: token  });
+     return novoToken;
  }
 
- function obterTokenRefresh(tokenUsuario){
+async  function obterTokenRefresh(tokenUsuario){
 
-    const promisse = new Promise((resolve,reject)=>{
-  
-        try{
-          const token = TokenAppRefresh.findAll({
-            raw:true,
-            where: {token:tokenUsuario}
-          });
-          resolve(token);
-        }catch(error){
-          reject(error);
-        }
-    })
-    return promisse;
+    const token = await  TokenAppRefresh.findAll({where: { token:tokenUsuario }});
+    return token;
   }
 
  export {criarTokenRefresh,obterTokenRefresh}

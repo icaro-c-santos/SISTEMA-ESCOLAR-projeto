@@ -9,7 +9,7 @@ const TokenAppRefresh = ssequelize.define("tokensRefresh",{
         allowNull: false,
         primaryKey: true
     },
-    token:{
+    refreshToken:{
         type: Sequelize.STRING,
         allowNull: false
     },

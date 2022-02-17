@@ -1,82 +1,72 @@
 import { criarToken } from "./dao_token.js";
 import { criarTokenRefresh } from "./dao_tokenRefresh.js";
 import jwt  from "jsonwebtoken";
+import erroApi from "../erroApi.js";
 
 function obterSenha(){
     return "icaro123";
 }
 
-
-function  gerarToken(idUsuario,admnistrador){
+async function  gerarToken(idUsuario,admnistrador=false){
     
-    const promisse = new Promise((resolve,reject)=>{
-   
         const iss = "API-ESCOLA-1532";
         const exp = 1800;
         const expRefresh = 3600;
-        const token = jwt.sign({userId: idUsuario ,adm: admnistrador, refresh: false},obterSenha(),{ expiresIn: exp, issuer: iss, subject: idUsuario});
-        const tokenResfresh = jwt.sign({userId: idUsuario,adm: admnistrador,refresh: true},obterSenha(),{ expiresIn: expRefresh, issuer: iss, subject: idUsuario});
+        const tokenCriado = jwt.sign({userId: idUsuario ,adm: admnistrador, refresh: false},obterSenha(),{ expiresIn: exp, issuer: iss, subject: idUsuario});
+        const tokenRefreshCriado =  jwt.sign({userId: idUsuario,adm: admnistrador,refresh: true},obterSenha(),{ expiresIn: expRefresh, issuer: iss, subject: idUsuario});
+       
+        const token = await criarToken(tokenCriado);
+        const tokenRefresh = await criarTokenRefresh(tokenRefreshCriado);
         
-        criarToken(token).then(token => {
-            criarTokenRefresh(tokenResfresh).then(tokenRefresh => resolve({token: token.dataValues.token, tokenRefresh: tokenRefresh.dataValues.token})).catch(error => reject(error))
-        }).catch( error => reject(error))
-        
-    })
-
-    
-    return promisse;
+        return {Token: token,RefreshToken: tokenRefresh}
 }
 
 
 
-const validarToken = (req,res,next)=>{
-   
-    try{
-            
-          jwt.verify(req.headers.bearer,obterSenha(),(error,resultado)=>{
+    const validarToken = (req,res,next)=>{
+        
+         jwt.verify(req.headers.bearer,obterSenha(),(error,resultado)=>{
 
-                if(!error){
-                    if(resultado.refresh){
-                        res.status(401).send({erro: "error", mensagem:"USUARIO NÃO AUTENTICADO!", detalhe: "TOKEN INVALIDO: O TOKEN PASSADO É DE ATUALZAÇÃO E O ESPERADO É DE AUTENTICAÇÃO!"});
-                    }else{
-                        res.locals.token = resultado;
-                        next();
-                    }
-                }else{
-                    res.status(401).send({erro: "error", mensagem:"USUARIO NÃO AUTENTICADO!", detalhe: error.message});
-                }
-          })
+             if(!error){
+                 if(resultado.refresh){
+                     const erro = erroApi(41401,"ERROR!","USUARIO NÃO AUTENTICADO!",401,"TOKEN INVALIDO: O TOKEN PASSADO É DE ATUALZAÇÃO E O ESPERADO É DE AUTENTICAÇÃO!");
+                     next(erro);
+                 }else{
+                     res.locals.token = resultado;
+                     next();
+                 }
+             }else{
+                 const erro = erroApi(40401,"ERROR!","USUARIO NÃO AUTENTICADO!",401,error.message);
+                 next(erro)
+             }
+        })
 
-        }catch(error){
-            res.status(500).send({error: "error", mensagem:"PROBLEMA NO SERVIDOR!"});
-        }
-}
+     }
 
 
 
 
 const validarTokenRefresh = (req,res,next)=>{
    
-    try{
             
           jwt.verify(req.headers.bearer,obterSenha(),(error,resultado)=>{
 
                 if(!error){
                     if(!resultado.refresh){
-                        res.status(401).send({erro: "error", mensagem:"USUARIO NÃO AUTENTICADO!", detalhe: "TOKEN INVALIDO: O TOKEN PASSADO É DE AUTENTICAÇÃO E O ESPERADO É DE ATUALIZAÇÃO!"});
+                        const erro = erroApi(40401,"ERROR!","REFRESHTOKEN INVALIDO!",401,"O TOKEN PASSADO É DE AUTENTICAÇÃO E O ESPERADO É DE ATUALIZAÇÃO!");
+                        next(erro);
                     }else{
                         res.locals.token = resultado;
                         next();
                     }
                 }else{
-                    res.status(401).send({erro: "error", mensagem:"USUARIO NÃO AUTENTICADO!", detalhe: error.message});
+                    const erro = erroApi(40401,"ERROR!","USUARIO NÃO AUTENTICADO!",401,error.message);
+                    next(erro);
+                
                 }
           })
-
-        }catch(error){
-            res.status(500).send({error: "error", mensagem:"PROBLEMA NO SERVIDOR!"});
-        }
 }
+    
 
 
 
@@ -86,7 +76,8 @@ const autorizarToken = (req,res,next)=>{
     if(adm){
         next();
     }else{
-        res.status(403).send({erro: "error", mensagem:"USUARIO SEM PERMISSÃO PARA ESTA REQUISIÇÃO!"});
+        const erro = erroApi(40403,"ERROR!","USUARIO SEM PERMISSÃO",403);
+        next(erro);   
     }
     
 }
