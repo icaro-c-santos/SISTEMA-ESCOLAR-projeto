@@ -8,6 +8,7 @@ const ssequelize = new Sequelize("bdescola","root","12345",{
 
 });
 
+
 export default ssequelize;
 
 

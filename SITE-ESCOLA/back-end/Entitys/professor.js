@@ -7,6 +7,7 @@ const Professor = ssequelize.define("professor",{
         type: Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
+        unique: true,
         primaryKey: true
     },
     nome:{

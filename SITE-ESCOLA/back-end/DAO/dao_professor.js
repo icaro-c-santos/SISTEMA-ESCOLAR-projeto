@@ -1,4 +1,4 @@
-import Professor from "../classes/professor.js";
+import Professor from "../Entitys/professor.js";
 import erroApi from "../servidor/erroApi.js";
 
 
