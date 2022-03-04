@@ -4,25 +4,24 @@ import erroApi from "../servidor/erroApi.js";
 
   async function criarProfessor(nome,idade,sexo){
 
-      const novoprofessor = await Professor.create({
+      return await Professor.create({
           nome: nome,
           idade: idade,
           sexo: sexo
-      });
-      return novoprofessor;
+      })
   }
 
 
   async function obterProfessores(){
 
-      const professores = await Professor.findAll();
+      const professores = await Professor.findAll({where:{estado:true}});
       return professores;
   }
   
 
     async function obterProfessorNome(nome){
     
-    const professores = await Professor.findAll({ where:{ nome: nome }});  
+    const professores = await Professor.findAll({ where:{ nome: nome, estado:true}});  
     return professores;
 
   }
@@ -30,7 +29,7 @@ import erroApi from "../servidor/erroApi.js";
 
   async function obterProfessorCodigo(codigo){
 
-      const professor = await Professor.findAll({ where: {codigo:codigo}});
+      const professor = await Professor.findAll({ where: {codigo:codigo, estado:true}});
       return professor;
   }
 
@@ -42,7 +41,7 @@ import erroApi from "../servidor/erroApi.js";
         if(!professor.length>0){
           throw(erroApi(40404,null,"CODIGO NÃO EXISTE!",404));
         }else{ 
-          return  await Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
+          return await Professor.update({ nome: nome, sexo: sexo,idade: idade },{where:{codigo:codigo}});
         }
    }
 
@@ -55,13 +54,13 @@ import erroApi from "../servidor/erroApi.js";
         if(!professor.length>0){
           throw(erroApi(41404,"ERRO!","CODIGO NÃO EXISTE!",404)); 
         }else{
-           await Professor.destroy({where:{codigo:codigo}});
-           return true;
+           return await Professor.update({estado:false},{where:{codigo:codigo}});
         }
   
         
 
   }
+
 
 export {criarProfessor,obterProfessores,obterProfessorCodigo,obterProfessorNome,alterarProfessor,excluirProfessor}
 

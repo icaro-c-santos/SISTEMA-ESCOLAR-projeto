@@ -9,6 +9,9 @@ const Chamada = ssequelize.define("Chamada",{
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
+    },estado:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
     },
     data:{
         type: Sequelize.DATE,

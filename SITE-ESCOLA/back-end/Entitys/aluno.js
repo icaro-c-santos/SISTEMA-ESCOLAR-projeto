@@ -9,6 +9,9 @@ const Aluno = ssequelize.define("Aluno",{
         autoIncrement: true,
         allowNull: false,
         primaryKey: true
+    },estado:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
     },
     nome:{
         type: Sequelize.STRING,
@@ -20,4 +23,5 @@ const Aluno = ssequelize.define("Aluno",{
     cpf: Sequelize.STRING
 });
 
+ssequelize.sync();
 export default Aluno;

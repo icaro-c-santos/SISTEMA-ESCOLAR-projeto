@@ -9,6 +9,9 @@ const Professor = ssequelize.define("professor",{
         allowNull: false,
         unique: true,
         primaryKey: true
+    },estado:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
     },
     nome:{
         type: Sequelize.STRING(150),

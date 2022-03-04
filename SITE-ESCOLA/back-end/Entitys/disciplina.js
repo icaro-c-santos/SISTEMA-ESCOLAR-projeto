@@ -12,7 +12,9 @@ const Disciplina = ssequelize.define("disciplina",{
     codigo:{
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+    },estado:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
     },
     nome:{
         type: Sequelize.STRING,

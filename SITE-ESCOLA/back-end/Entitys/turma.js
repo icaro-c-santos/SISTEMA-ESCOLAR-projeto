@@ -15,10 +15,13 @@ const Turma = ssequelize.define("turma",{
         allowNull: false,
         primaryKey: true
     },
+    estado:{
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+    },
     codigo:{
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
     },
 });
 
@@ -27,17 +30,17 @@ Disciplina.hasMany(Turma,{
     foreignKey: "idTurma"
 });
 
-Turma.hasOne(Disciplina,{
+Turma.belongsTo(Disciplina,{
     constraint: true,
     foreignKey: "idDisciplina"
 });
 
-Turma.hasOne(Professor,{
+Turma.belongsTo(Professor,{
     constraint: true,
     foreignKey: "idProfessor"
 }); 
 
-Professor.belongsTo(Turma,{
+Professor.hasMany(Turma,{
     constraint: true,
     foreignKey: "idTurma"
 });
@@ -68,5 +71,4 @@ Chamada.belongsToMany(Turma,{
     foreignKey: "idChamada"
 })
 
-ssequelize.sync();
 export default Turma;
